@@ -6,13 +6,9 @@ import Blog from './components/Blog';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
-const LoginForm = ({
-  username,
-  setUsername,
-  password,
-  setPassword,
-  setUser,
-}) => {
+const LoginForm = ({ setUser }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -58,10 +54,71 @@ const LoginForm = ({
   );
 };
 
+const NewBlogForm = ({ setBlogs, blogs }) => {
+  const [blog, setBlog] = useState({
+    title: '',
+    author: '',
+    url: '',
+  });
+
+  const handleChange = ({ value }, property) => {
+    let newObj = { ...blog };
+    newObj[property] = value;
+    setBlog(newObj);
+    console.log(newObj);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setBlog({
+      title: '',
+      author: '',
+      url: '',
+    });
+    try {
+      const createBlog = await blogService.create(blog);
+      let newBlogs = [...blogs];
+      newBlogs.push(createBlog);
+      setBlogs(newBlogs);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        Title&nbsp;
+        <input
+          type="text"
+          name="title"
+          value={blog.title}
+          onChange={({ target }) => handleChange(target, 'title')}
+        ></input>
+      </div>
+      <div>
+        Author&nbsp;
+        <input
+          type="text"
+          name="author"
+          value={blog.author}
+          onChange={({ target }) => handleChange(target, 'author')}
+        ></input>
+      </div>
+      <div>
+        Url&nbsp;
+        <input
+          type="text"
+          name="url"
+          value={blog.url}
+          onChange={({ target }) => handleChange(target, 'url')}
+        ></input>
+      </div>
+      <button type="submit">Create</button>
+    </form>
+  );
+};
+
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -84,24 +141,20 @@ const App = () => {
 
   return (
     <>
-      {!user ? (
-        <LoginForm
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-          setUser={setUser}
-        />
-      ) : (
-        <div>
-          <h2>blogs</h2>
-          <div>
-            {user.name} logged in. &nbsp;
-            <button onClick={handleLogout}>Logout</button>
-            <br />
-            <br />
-          </div>
+      {!user && <LoginForm setUser={setUser} />}
+      <h2>blogs</h2>
+      <div>
+        {user && user.name} logged in. &nbsp;
+        <button onClick={handleLogout}>Logout</button>
+        <br />
+        <br />
+      </div>
 
+      <NewBlogForm blogs={blogs} setBlogs={setBlogs} />
+      <br />
+
+      {user && (
+        <div>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
