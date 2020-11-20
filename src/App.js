@@ -65,7 +65,6 @@ const NewBlogForm = ({ setBlogs, blogs }) => {
     let newObj = { ...blog };
     newObj[property] = value;
     setBlog(newObj);
-    console.log(newObj);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,36 +83,39 @@ const NewBlogForm = ({ setBlogs, blogs }) => {
     }
   };
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        Title&nbsp;
-        <input
-          type="text"
-          name="title"
-          value={blog.title}
-          onChange={({ target }) => handleChange(target, 'title')}
-        ></input>
-      </div>
-      <div>
-        Author&nbsp;
-        <input
-          type="text"
-          name="author"
-          value={blog.author}
-          onChange={({ target }) => handleChange(target, 'author')}
-        ></input>
-      </div>
-      <div>
-        Url&nbsp;
-        <input
-          type="text"
-          name="url"
-          value={blog.url}
-          onChange={({ target }) => handleChange(target, 'url')}
-        ></input>
-      </div>
-      <button type="submit">Create</button>
-    </form>
+    <>
+      <h2>Create new</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          Title&nbsp;
+          <input
+            type="text"
+            name="title"
+            value={blog.title}
+            onChange={({ target }) => handleChange(target, 'title')}
+          ></input>
+        </div>
+        <div>
+          Author&nbsp;
+          <input
+            type="text"
+            name="author"
+            value={blog.author}
+            onChange={({ target }) => handleChange(target, 'author')}
+          ></input>
+        </div>
+        <div>
+          Url&nbsp;
+          <input
+            type="text"
+            name="url"
+            value={blog.url}
+            onChange={({ target }) => handleChange(target, 'url')}
+          ></input>
+        </div>
+        <button type="submit">Create</button>
+      </form>
+    </>
   );
 };
 
@@ -142,23 +144,24 @@ const App = () => {
   return (
     <>
       {!user && <LoginForm setUser={setUser} />}
-      <h2>blogs</h2>
-      <div>
-        {user && user.name} logged in. &nbsp;
-        <button onClick={handleLogout}>Logout</button>
-        <br />
-        <br />
-      </div>
-
-      <NewBlogForm blogs={blogs} setBlogs={setBlogs} />
-      <br />
-
       {user && (
-        <div>
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
-        </div>
+        <>
+          <h2>blogs</h2>
+          <div>
+            {user.name} logged in. &nbsp;
+            <button onClick={handleLogout}>Logout</button>
+            <br />
+          </div>
+
+          <NewBlogForm blogs={blogs} setBlogs={setBlogs} />
+          <br />
+
+          <div>
+            {blogs.map((blog) => (
+              <Blog key={blog.id} blog={blog} />
+            ))}
+          </div>
+        </>
       )}
     </>
   );
