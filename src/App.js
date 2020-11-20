@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Blog from './components/Blog';
+import Notification from './components/Notification';
+import './App.css';
 
 // Services
 
 import blogService from './services/blogs';
 import loginService from './services/login';
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = ({ setUser, handleNotification }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const handleSubmit = async (e) => {
@@ -21,7 +23,12 @@ const LoginForm = ({ setUser }) => {
       setUser(user);
       setUsername('');
       setPassword('');
+      handleNotification('success', `${user.username} successfully logged in`);
     } catch (e) {
+      handleNotification(
+        'error',
+        'Login failed, check your username and password'
+      );
       console.log(e);
     }
   };
@@ -54,7 +61,7 @@ const LoginForm = ({ setUser }) => {
   );
 };
 
-const NewBlogForm = ({ setBlogs, blogs }) => {
+const NewBlogForm = ({ setBlogs, blogs, handleNotification }) => {
   const [blog, setBlog] = useState({
     title: '',
     author: '',
@@ -68,17 +75,22 @@ const NewBlogForm = ({ setBlogs, blogs }) => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setBlog({
-      title: '',
-      author: '',
-      url: '',
-    });
     try {
       const createBlog = await blogService.create(blog);
+      setBlog({
+        title: '',
+        author: '',
+        url: '',
+      });
       let newBlogs = [...blogs];
       newBlogs.push(createBlog);
       setBlogs(newBlogs);
+      handleNotification('success', `blog ${blog.title} successfully created`);
     } catch (e) {
+      handleNotification(
+        'error',
+        `Unable to save blog, please verify that every field is filled before saving a new blog`
+      );
       console.log(e);
     }
   };
@@ -122,6 +134,7 @@ const NewBlogForm = ({ setBlogs, blogs }) => {
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -133,17 +146,34 @@ const App = () => {
       const user = JSON.parse(userJSON);
       setUser(user);
       blogService.setToken(user.token);
+      handleNotification('success', `${user.username} successfully logged in`);
     }
   }, []);
 
   const handleLogout = () => {
     window.localStorage.removeItem('user');
     setUser(null);
+    handleNotification('success', `${user.username} successfully logged out`);
+  };
+
+  const handleNotification = (type, message) => {
+    const notificationObject = {
+      message,
+      type,
+    };
+    setNotification(notificationObject);
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
   };
 
   return (
     <>
-      {!user && <LoginForm setUser={setUser} />}
+      {notification && <Notification notification={notification} />}
+      {!user && (
+        <LoginForm setUser={setUser} handleNotification={handleNotification} />
+      )}
+
       {user && (
         <>
           <h2>blogs</h2>
@@ -153,7 +183,11 @@ const App = () => {
             <br />
           </div>
 
-          <NewBlogForm blogs={blogs} setBlogs={setBlogs} />
+          <NewBlogForm
+            blogs={blogs}
+            setBlogs={setBlogs}
+            handleNotification={handleNotification}
+          />
           <br />
 
           <div>
