@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Blog from './components/Blog';
+import NewBlogForm from './components/NewBlogForm';
+import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import './App.css';
 
@@ -8,10 +10,52 @@ import './App.css';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
-const LoginForm = ({ setUser, handleNotification }) => {
+const App = () => {
+  const [blogs, setBlogs] = useState([]);
+  const [user, setUser] = useState(null);
+  const [notification, setNotification] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const handleSubmit = async (e) => {
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    const getAllBlogs = async () => {
+      try {
+        const allBlogs = await blogService.getAll();
+        setBlogs(allBlogs);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    const userJSON = window.localStorage.getItem('user');
+    if (userJSON) {
+      const user = JSON.parse(userJSON);
+      setUser(user);
+      blogService.setToken(user.token);
+      handleNotification('success', `${user.username} successfully logged in`);
+    }
+    getAllBlogs();
+  }, []);
+
+  const handleLogout = () => {
+    setShowForm(false);
+    window.localStorage.removeItem('user');
+    setUser(null);
+    handleNotification('success', `${user.username} successfully logged out`);
+  };
+
+  const handleNotification = (type, message) => {
+    const notificationObject = {
+      message,
+      type,
+    };
+    setNotification(notificationObject);
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
+
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
       const user = await loginService.login({
@@ -33,145 +77,25 @@ const LoginForm = ({ setUser, handleNotification }) => {
     }
   };
 
-  return (
-    <>
-      <h1>Log in to the app</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          Username&nbsp;
-          <input
-            type="text"
-            name="username"
-            value={username}
-            onChange={({ target }) => setUsername(target.value)}
-          ></input>
-        </div>
-        <div>
-          Password&nbsp;
-          <input
-            type="text"
-            name="password"
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-          ></input>
-        </div>
-        <button type="submit">Login</button>
-      </form>
-    </>
-  );
-};
-
-const NewBlogForm = ({ setBlogs, blogs, handleNotification }) => {
-  const [blog, setBlog] = useState({
-    title: '',
-    author: '',
-    url: '',
-  });
-
-  const handleChange = ({ value }, property) => {
-    let newObj = { ...blog };
-    newObj[property] = value;
-    setBlog(newObj);
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const createBlog = await blogService.create(blog);
-      setBlog({
-        title: '',
-        author: '',
-        url: '',
-      });
-      let newBlogs = [...blogs];
-      newBlogs.push(createBlog);
-      setBlogs(newBlogs);
-      handleNotification('success', `blog ${blog.title} successfully created`);
-    } catch (e) {
-      handleNotification(
-        'error',
-        `Unable to save blog, please verify that every field is filled before saving a new blog`
-      );
-      console.log(e);
+  const handleChange = (e, type) => {
+    if (type === 'username') {
+      setUsername(e.target.value);
     }
-  };
-  return (
-    <>
-      <h2>Create new</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          Title&nbsp;
-          <input
-            type="text"
-            name="title"
-            value={blog.title}
-            onChange={({ target }) => handleChange(target, 'title')}
-          ></input>
-        </div>
-        <div>
-          Author&nbsp;
-          <input
-            type="text"
-            name="author"
-            value={blog.author}
-            onChange={({ target }) => handleChange(target, 'author')}
-          ></input>
-        </div>
-        <div>
-          Url&nbsp;
-          <input
-            type="text"
-            name="url"
-            value={blog.url}
-            onChange={({ target }) => handleChange(target, 'url')}
-          ></input>
-        </div>
-        <button type="submit">Create</button>
-      </form>
-    </>
-  );
-};
-
-const App = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState(null);
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
-
-  useEffect(() => {
-    const userJSON = window.localStorage.getItem('user');
-    if (userJSON) {
-      const user = JSON.parse(userJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-      handleNotification('success', `${user.username} successfully logged in`);
+    if (type === 'password') {
+      setPassword(e.target.value);
     }
-  }, []);
-
-  const handleLogout = () => {
-    window.localStorage.removeItem('user');
-    setUser(null);
-    handleNotification('success', `${user.username} successfully logged out`);
-  };
-
-  const handleNotification = (type, message) => {
-    const notificationObject = {
-      message,
-      type,
-    };
-    setNotification(notificationObject);
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
   };
 
   return (
     <>
       {notification && <Notification notification={notification} />}
       {!user && (
-        <LoginForm setUser={setUser} handleNotification={handleNotification} />
+        <LoginForm
+          handleLoginSubmit={handleLoginSubmit}
+          username={username}
+          password={password}
+          handleChange={handleChange}
+        />
       )}
 
       {user && (
@@ -182,12 +106,21 @@ const App = () => {
             <button onClick={handleLogout}>Logout</button>
             <br />
           </div>
+          {showForm ? (
+            <NewBlogForm
+              blogs={blogs}
+              setBlogs={setBlogs}
+              handleNotification={handleNotification}
+              setShowForm={setShowForm}
+            />
+          ) : (
+            <>
+              <br />
+              <button onClick={() => setShowForm(true)}>New blog</button>
+              <br />
+            </>
+          )}
 
-          <NewBlogForm
-            blogs={blogs}
-            setBlogs={setBlogs}
-            handleNotification={handleNotification}
-          />
           <br />
 
           <div>
