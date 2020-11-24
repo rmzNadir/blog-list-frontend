@@ -89,6 +89,25 @@ const App = () => {
     }
   };
 
+  const handleRemove = async (blog) => {
+    const { title, author, id } = blog;
+    const confirmResult = window.confirm(
+      `Are you sure you want to remove blog ${title} by ${author}?`
+    );
+    if (confirmResult) {
+      try {
+        const deleteBlog = await blogService.remove(id);
+        if (deleteBlog.success) {
+          const oldBlogs = [...blogs];
+          const newBlogs = oldBlogs.filter((blog) => blog.id !== id);
+          setBlogs(newBlogs);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
   return (
     <>
       {notification && <Notification notification={notification} />}
@@ -132,6 +151,8 @@ const App = () => {
                 key={blog.id}
                 blog={blog}
                 handleNotification={handleNotification}
+                loggedUser={user.username}
+                handleRemove={handleRemove}
               />
             ))}
           </div>

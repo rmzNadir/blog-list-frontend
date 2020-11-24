@@ -19,7 +19,7 @@ const infoStyle = {
   alignItems: 'center',
 };
 
-const Blog = ({ blog, handleNotification }) => {
+const Blog = ({ blog, handleNotification, loggedUser, handleRemove }) => {
   const [seeMore, setSeeMore] = useState(false);
   const [Blog, setBlog] = useState({ ...blog });
 
@@ -70,7 +70,11 @@ const Blog = ({ blog, handleNotification }) => {
             </button>
           </div>
           <br />
-          <div>Poster: {user.name}</div>
+          <div>Poster: {user.username}</div>
+          <br />
+          {loggedUser === user.username && (
+            <button onClick={() => handleRemove(blog)}>Remove</button>
+          )}
         </div>
       )}
     </div>
