@@ -21,4 +21,9 @@ const create = async (newObject) => {
   return res.data;
 };
 
-export default { getAll, setToken, create };
+const update = async (id, blog) => {
+  const res = await axios.patch(`${baseUrl}/${id}`, blog);
+  return res.data;
+};
+
+export default { getAll, setToken, create, update };

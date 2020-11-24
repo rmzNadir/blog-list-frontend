@@ -13,7 +13,9 @@ const NewBlogForm = ({ setBlogs, blogs, handleNotification, setShowForm }) => {
     newObj[property] = value;
     setBlog(newObj);
   };
+
   const handleSubmit = async (e) => {
+    setShowForm(false);
     e.preventDefault();
     try {
       const createBlog = await blogService.create(blog);
@@ -25,7 +27,6 @@ const NewBlogForm = ({ setBlogs, blogs, handleNotification, setShowForm }) => {
       let newBlogs = [...blogs];
       newBlogs.push(createBlog);
       setBlogs(newBlogs);
-      setShowForm(false);
       handleNotification('success', `blog ${blog.title} successfully created`);
     } catch (e) {
       handleNotification(

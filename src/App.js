@@ -77,7 +77,7 @@ const App = () => {
     }
   };
 
-  const handleChange = (e, type) => {
+  const handleLoginChange = (e, type) => {
     if (type === 'username') {
       setUsername(e.target.value);
     }
@@ -94,7 +94,7 @@ const App = () => {
           handleLoginSubmit={handleLoginSubmit}
           username={username}
           password={password}
-          handleChange={handleChange}
+          handleLoginChange={handleLoginChange}
         />
       )}
 
@@ -125,7 +125,11 @@ const App = () => {
 
           <div>
             {blogs.map((blog) => (
-              <Blog key={blog.id} blog={blog} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                handleNotification={handleNotification}
+              />
             ))}
           </div>
         </>
