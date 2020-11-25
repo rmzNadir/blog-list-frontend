@@ -44,9 +44,9 @@ const Blog = ({ blog, handleNotification, loggedUser, handleRemove }) => {
   };
 
   return (
-    <div style={BlogStyle}>
+    <div className="blog" style={BlogStyle}>
       <div>
-        <span style={{ marginRight: '1rem' }}>
+        <span className="defaultInfo" style={{ marginRight: '1rem' }}>
           <i> {title}</i> by <strong>{author}</strong>
         </span>
         <button onClick={() => setSeeMore(!seeMore)}>
@@ -54,7 +54,7 @@ const Blog = ({ blog, handleNotification, loggedUser, handleRemove }) => {
         </button>
       </div>
       {seeMore && (
-        <div>
+        <div className="extraInfo">
           <br />
           <div>
             Link: <a href={url}>{url}</a>
