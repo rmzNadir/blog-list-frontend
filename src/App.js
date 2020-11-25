@@ -17,7 +17,11 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showForm, setShowForm] = useState(false);
-  const [blog, setBlog] = useState({});
+  const [newBlog, setNewBlog] = useState({
+    title: '',
+    author: '',
+    url: '',
+  });
 
   useEffect(() => {
     const getAllBlogs = async () => {
@@ -116,12 +120,15 @@ const App = () => {
     setShowForm(false);
     e.preventDefault();
     try {
-      const createBlog = await blogService.create(blog);
-      setBlog({});
+      const createBlog = await blogService.create(newBlog);
+      setNewBlog({});
       let newBlogs = [...blogs];
       newBlogs.push(createBlog);
       setBlogs(newBlogs);
-      handleNotification('success', `blog ${blog.title} successfully created`);
+      handleNotification(
+        'success',
+        `blog ${newBlog.title} successfully created`
+      );
     } catch (e) {
       handleNotification(
         'error',
@@ -132,9 +139,31 @@ const App = () => {
   };
 
   const handleNewBlogChange = ({ value }, property) => {
-    let newObj = { ...blog };
+    let newObj = { ...newBlog };
     newObj[property] = value;
-    setBlog(newObj);
+    setNewBlog(newObj);
+  };
+
+  const handleLike = async (id) => {
+    const blog = blogs.find((blog) => blog.id === id);
+    const updatedBlog = { ...blog, user: user.id, likes: blog.likes + 1 };
+    try {
+      const updateBlog = await blogService.update(id, updatedBlog);
+      const { data, success } = updateBlog;
+      if (success) {
+        const updatedBlogs = blogs.map((blog) =>
+          blog.id === id ? data : blog
+        );
+        setBlogs(updatedBlogs);
+      }
+      handleNotification(
+        'success',
+        `You liked ${blog.title} by ${blog.author}`
+      );
+    } catch (e) {
+      handleNotification('error', 'Unable to like blog, something went wrong');
+      console.log(e);
+    }
   };
 
   return (
@@ -159,7 +188,7 @@ const App = () => {
           </div>
           {showForm ? (
             <NewBlogForm
-              blog={blog}
+              newBlog={newBlog}
               handleChange={handleNewBlogChange}
               handleSubmit={handleSubmitBlog}
               setShowForm={setShowForm}
@@ -182,6 +211,7 @@ const App = () => {
                 handleNotification={handleNotification}
                 loggedUser={user.username}
                 handleRemove={handleRemove}
+                handleLike={handleLike}
               />
             ))}
           </div>

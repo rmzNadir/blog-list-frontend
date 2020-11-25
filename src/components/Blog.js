@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import blogService from '../services/blogs';
 
 const BlogStyle = {
   display: 'flex',
@@ -19,29 +18,10 @@ const infoStyle = {
   alignItems: 'center',
 };
 
-const Blog = ({ blog, handleNotification, loggedUser, handleRemove }) => {
+const Blog = ({ blog, handleLike, loggedUser, handleRemove }) => {
   const [seeMore, setSeeMore] = useState(false);
-  const [Blog, setBlog] = useState({ ...blog });
 
-  const { title, author, url, likes, user, id } = Blog;
-
-  const handleLike = async (id) => {
-    try {
-      const updateBlog = await blogService.update(id, {
-        ...Blog,
-        user: user.id,
-        likes: likes + 1,
-      });
-      const { data, success } = updateBlog;
-      if (success) {
-        setBlog({ ...data });
-      }
-      handleNotification('success', `You liked ${title} by ${author}`);
-    } catch (e) {
-      handleNotification('error', 'Unable to like blog, something went wrong');
-      console.log(e);
-    }
-  };
+  const { title, author, url, likes, user, id } = blog;
 
   return (
     <div className="blog" style={BlogStyle}>
@@ -63,6 +43,7 @@ const Blog = ({ blog, handleNotification, loggedUser, handleRemove }) => {
           <div className="likesDiv" style={infoStyle}>
             Likes: {likes}
             <button
+              className="likeButton"
               style={{ marginLeft: '0.5rem' }}
               onClick={() => handleLike(id)}
             >

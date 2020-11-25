@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const NewBlogForm = ({ handleChange, handleSubmit, setShowForm, blog }) => {
+const NewBlogForm = ({ handleChange, handleSubmit, setShowForm, newBlog }) => {
+  const { title, author, url } = newBlog;
   return (
     <>
       <h2>Create new</h2>
@@ -11,7 +12,7 @@ const NewBlogForm = ({ handleChange, handleSubmit, setShowForm, blog }) => {
           <input
             type="text"
             name="title"
-            value={blog.title}
+            value={title}
             onChange={({ target }) => handleChange(target, 'title')}
           ></input>
         </div>
@@ -20,7 +21,7 @@ const NewBlogForm = ({ handleChange, handleSubmit, setShowForm, blog }) => {
           <input
             type="text"
             name="author"
-            value={blog.author}
+            value={author}
             onChange={({ target }) => handleChange(target, 'author')}
           ></input>
         </div>
@@ -29,7 +30,7 @@ const NewBlogForm = ({ handleChange, handleSubmit, setShowForm, blog }) => {
           <input
             type="text"
             name="url"
-            value={blog.url}
+            value={url}
             onChange={({ target }) => handleChange(target, 'url')}
           ></input>
         </div>
@@ -46,7 +47,7 @@ NewBlogForm.propTypes = {
   handleChange: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   setShowForm: PropTypes.func.isRequired,
-  blog: PropTypes.object.isRequired,
+  newBlog: PropTypes.object.isRequired,
 };
 
 export default NewBlogForm;

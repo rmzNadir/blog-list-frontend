@@ -47,3 +47,29 @@ test('if "more" button is clicked url, user and likes are shown', () => {
   expect(likesDiv).toHaveTextContent('Likes: 5');
   expect(userDiv).toHaveTextContent('Poster: username');
 });
+
+test('If like button is pressed twice, two events are sent', () => {
+  const blog = {
+    title: 'title',
+    author: 'author',
+    likes: 5,
+    url: 'url',
+    user: {
+      username: 'username',
+      name: 'name',
+    },
+  };
+
+  const handleLike = jest.fn();
+
+  const component = render(<Blog blog={blog} handleLike={handleLike} />);
+
+  // We need to first toggle the info button so we can 'see' the like button
+  const toggleInfo = component.container.querySelector('.toggleInfo');
+  fireEvent.click(toggleInfo);
+
+  const button = component.container.querySelector('.likeButton');
+  fireEvent.click(button);
+  fireEvent.click(button);
+  expect(handleLike.mock.calls).toHaveLength(2);
+});
