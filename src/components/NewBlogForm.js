@@ -1,41 +1,7 @@
-import React, { useState } from 'react';
-import blogService from '../services/blogs';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const NewBlogForm = ({ setBlogs, blogs, handleNotification, setShowForm }) => {
-  const [blog, setBlog] = useState({
-    title: '',
-    author: '',
-    url: '',
-  });
-
-  const handleChange = ({ value }, property) => {
-    let newObj = { ...blog };
-    newObj[property] = value;
-    setBlog(newObj);
-  };
-
-  const handleSubmit = async (e) => {
-    setShowForm(false);
-    e.preventDefault();
-    try {
-      const createBlog = await blogService.create(blog);
-      setBlog({
-        title: '',
-        author: '',
-        url: '',
-      });
-      let newBlogs = [...blogs];
-      newBlogs.push(createBlog);
-      setBlogs(newBlogs);
-      handleNotification('success', `blog ${blog.title} successfully created`);
-    } catch (e) {
-      handleNotification(
-        'error',
-        `Unable to save blog, please verify that every field is filled before saving a new blog`
-      );
-      console.log(e);
-    }
-  };
+const NewBlogForm = ({ handleChange, handleSubmit, setShowForm, blog }) => {
   return (
     <>
       <h2>Create new</h2>
@@ -74,6 +40,13 @@ const NewBlogForm = ({ setBlogs, blogs, handleNotification, setShowForm }) => {
       </form>
     </>
   );
+};
+
+NewBlogForm.propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  setShowForm: PropTypes.func.isRequired,
+  blog: PropTypes.object.isRequired,
 };
 
 export default NewBlogForm;

@@ -38,7 +38,7 @@ const Blog = ({ blog, handleNotification, loggedUser, handleRemove }) => {
       }
       handleNotification('success', `You liked ${title} by ${author}`);
     } catch (e) {
-      handleNotification('error', `Unable to like blog, something went wrong`);
+      handleNotification('error', 'Unable to like blog, something went wrong');
       console.log(e);
     }
   };

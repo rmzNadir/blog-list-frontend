@@ -17,6 +17,7 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [blog, setBlog] = useState({});
 
   useEffect(() => {
     const getAllBlogs = async () => {
@@ -108,6 +109,34 @@ const App = () => {
     }
   };
 
+  //Can't have the handleSubmitBlog functoin inside newBlogForm because updating a state inside an unmounted component (newBlogForm is unmounted when not visibile)
+  // leads to a memory leak and a red warning inside the console lol.
+
+  const handleSubmitBlog = async (e) => {
+    setShowForm(false);
+    e.preventDefault();
+    try {
+      const createBlog = await blogService.create(blog);
+      setBlog({});
+      let newBlogs = [...blogs];
+      newBlogs.push(createBlog);
+      setBlogs(newBlogs);
+      handleNotification('success', `blog ${blog.title} successfully created`);
+    } catch (e) {
+      handleNotification(
+        'error',
+        'Unable to save blog, please verify that every field is filled before saving a new blog'
+      );
+      console.log(e);
+    }
+  };
+
+  const handleNewBlogChange = ({ value }, property) => {
+    let newObj = { ...blog };
+    newObj[property] = value;
+    setBlog(newObj);
+  };
+
   return (
     <>
       {notification && <Notification notification={notification} />}
@@ -130,9 +159,9 @@ const App = () => {
           </div>
           {showForm ? (
             <NewBlogForm
-              blogs={blogs}
-              setBlogs={setBlogs}
-              handleNotification={handleNotification}
+              blog={blog}
+              handleChange={handleNewBlogChange}
+              handleSubmit={handleSubmitBlog}
               setShowForm={setShowForm}
             />
           ) : (
