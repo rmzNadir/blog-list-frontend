@@ -49,18 +49,18 @@ const Blog = ({ blog, handleNotification, loggedUser, handleRemove }) => {
         <span className="defaultInfo" style={{ marginRight: '1rem' }}>
           <i> {title}</i> by <strong>{author}</strong>
         </span>
-        <button onClick={() => setSeeMore(!seeMore)}>
+        <button className="toggleInfo" onClick={() => setSeeMore(!seeMore)}>
           {seeMore ? 'Close' : 'More'}
         </button>
       </div>
       {seeMore && (
         <div className="extraInfo">
           <br />
-          <div>
+          <div className="linkDiv">
             Link: <a href={url}>{url}</a>
           </div>
           <br />
-          <div style={infoStyle}>
+          <div className="likesDiv" style={infoStyle}>
             Likes: {likes}
             <button
               style={{ marginLeft: '0.5rem' }}
@@ -70,7 +70,7 @@ const Blog = ({ blog, handleNotification, loggedUser, handleRemove }) => {
             </button>
           </div>
           <br />
-          <div>Poster: {user.username}</div>
+          <div className="posterDiv">Poster: {user.username}</div>
           <br />
           {loggedUser === user.username && (
             <button onClick={() => handleRemove(blog)}>Remove</button>
