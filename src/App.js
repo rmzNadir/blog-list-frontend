@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
+
+// Components
+
 import Blog from './components/Blog';
 import NewBlogForm from './components/NewBlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
+
+// Styles
+
 import './App.css';
 
 // Services
@@ -14,8 +20,6 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
 
   useEffect(() => {
     const getAllBlogs = async () => {
@@ -39,11 +43,7 @@ const App = () => {
     getAllBlogs();
   }, []);
 
-  const handleLogout = () => {
-    window.localStorage.removeItem('user');
-    setUser(null);
-    handleNotification('success', `${user.username} successfully logged out`);
-  };
+  /* ------------------------ Services ------------------------ */
 
   const handleNotification = (type, message) => {
     const notificationObject = {
@@ -56,18 +56,19 @@ const App = () => {
     }, 3000);
   };
 
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault();
+  // Service implementation for handling user logins
+
+  const handleLogin = async (username, password) => {
     try {
       const user = await loginService.login({
         username,
         password,
       });
+
       window.localStorage.setItem('user', JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
-      setUsername('');
-      setPassword('');
+
       handleNotification('success', `${user.username} successfully logged in`);
     } catch (e) {
       handleNotification(
@@ -78,14 +79,15 @@ const App = () => {
     }
   };
 
-  const handleLoginChange = (e, type) => {
-    if (type === 'username') {
-      setUsername(e.target.value);
-    }
-    if (type === 'password') {
-      setPassword(e.target.value);
-    }
+  // Service implementation for handling user logouts
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('user');
+    setUser(null);
+    handleNotification('success', `${user.username} successfully logged out`);
   };
+
+  // Service implementation for handling removal of blogs
 
   const handleRemove = async (blog) => {
     const { title, author, id } = blog;
@@ -105,6 +107,8 @@ const App = () => {
       }
     }
   };
+
+  // Service implementation for adding likes to blogs
 
   const handleLike = async (id) => {
     const blog = blogs.find((blog) => blog.id === id);
@@ -128,9 +132,9 @@ const App = () => {
     }
   };
 
-  // Service for creating a new blog
+  // Service implementation for creating a new blog
 
-  const addBlog = async (blog) => {
+  const createBlog = async (blog) => {
     try {
       const newBlog = await blogService.create(blog);
       setBlogs(blogs.concat(newBlog));
@@ -150,14 +154,7 @@ const App = () => {
   return (
     <>
       {notification && <Notification notification={notification} />}
-      {!user && (
-        <LoginForm
-          handleLoginSubmit={handleLoginSubmit}
-          username={username}
-          password={password}
-          handleLoginChange={handleLoginChange}
-        />
-      )}
+      {!user && <LoginForm handleLogin={handleLogin} />}
 
       {user && (
         <>
@@ -168,7 +165,7 @@ const App = () => {
             <br />
           </div>
 
-          <NewBlogForm addBlog={addBlog} />
+          <NewBlogForm createBlog={createBlog} />
 
           <br />
 

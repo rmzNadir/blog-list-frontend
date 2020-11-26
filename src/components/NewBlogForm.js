@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const NewBlogForm = ({ addBlog }) => {
+const NewBlogForm = ({ createBlog }) => {
   const [showForm, setShowForm] = useState(false);
   const [newBlog, setNewBlog] = useState({
     title: '',
@@ -17,10 +17,10 @@ const NewBlogForm = ({ addBlog }) => {
     setNewBlog(newObj);
   };
 
-  const handleSubmitBlog = async (e) => {
+  const handleSubmitBlog = (e) => {
     e.preventDefault();
     setShowForm(false);
-    addBlog(newBlog);
+    createBlog(newBlog);
     setNewBlog({
       title: '',
       author: '',
@@ -85,7 +85,7 @@ const NewBlogForm = ({ addBlog }) => {
 };
 
 NewBlogForm.propTypes = {
-  addBlog: PropTypes.func.isRequired,
+  createBlog: PropTypes.func.isRequired,
 };
 
 export default NewBlogForm;
