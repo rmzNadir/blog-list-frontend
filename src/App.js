@@ -16,12 +16,6 @@ const App = () => {
   const [notification, setNotification] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showForm, setShowForm] = useState(false);
-  const [newBlog, setNewBlog] = useState({
-    title: '',
-    author: '',
-    url: '',
-  });
 
   useEffect(() => {
     const getAllBlogs = async () => {
@@ -46,7 +40,6 @@ const App = () => {
   }, []);
 
   const handleLogout = () => {
-    setShowForm(false);
     window.localStorage.removeItem('user');
     setUser(null);
     handleNotification('success', `${user.username} successfully logged out`);
@@ -113,37 +106,6 @@ const App = () => {
     }
   };
 
-  //Can't have the handleSubmitBlog functoin inside newBlogForm because updating a state inside an unmounted component (newBlogForm is unmounted when not visibile)
-  // leads to a memory leak and a red warning inside the console lol.
-
-  const handleSubmitBlog = async (e) => {
-    setShowForm(false);
-    e.preventDefault();
-    try {
-      const createBlog = await blogService.create(newBlog);
-      setNewBlog({});
-      let newBlogs = [...blogs];
-      newBlogs.push(createBlog);
-      setBlogs(newBlogs);
-      handleNotification(
-        'success',
-        `blog ${newBlog.title} successfully created`
-      );
-    } catch (e) {
-      handleNotification(
-        'error',
-        'Unable to save blog, please verify that every field is filled before saving a new blog'
-      );
-      console.log(e);
-    }
-  };
-
-  const handleNewBlogChange = ({ value }, property) => {
-    let newObj = { ...newBlog };
-    newObj[property] = value;
-    setNewBlog(newObj);
-  };
-
   const handleLike = async (id) => {
     const blog = blogs.find((blog) => blog.id === id);
     const updatedBlog = { ...blog, user: user.id, likes: blog.likes + 1 };
@@ -162,6 +124,25 @@ const App = () => {
       );
     } catch (e) {
       handleNotification('error', 'Unable to like blog, something went wrong');
+      console.log(e);
+    }
+  };
+
+  // Service for creating a new blog
+
+  const addBlog = async (blog) => {
+    try {
+      const newBlog = await blogService.create(blog);
+      setBlogs(blogs.concat(newBlog));
+      handleNotification(
+        'success',
+        `blog ${newBlog.title} successfully created`
+      );
+    } catch (e) {
+      handleNotification(
+        'error',
+        'Unable to save blog, please verify that every field is filled before saving a new blog'
+      );
       console.log(e);
     }
   };
@@ -186,20 +167,8 @@ const App = () => {
             <button onClick={handleLogout}>Logout</button>
             <br />
           </div>
-          {showForm ? (
-            <NewBlogForm
-              newBlog={newBlog}
-              handleChange={handleNewBlogChange}
-              handleSubmit={handleSubmitBlog}
-              setShowForm={setShowForm}
-            />
-          ) : (
-            <>
-              <br />
-              <button onClick={() => setShowForm(true)}>New blog</button>
-              <br />
-            </>
-          )}
+
+          <NewBlogForm addBlog={addBlog} />
 
           <br />
 

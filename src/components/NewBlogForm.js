@@ -1,53 +1,91 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const NewBlogForm = ({ handleChange, handleSubmit, setShowForm, newBlog }) => {
+const NewBlogForm = ({ addBlog }) => {
+  const [showForm, setShowForm] = useState(false);
+  const [newBlog, setNewBlog] = useState({
+    title: '',
+    author: '',
+    url: '',
+  });
+
   const { title, author, url } = newBlog;
+
+  const handleNewBlogChange = ({ value }, property) => {
+    let newObj = { ...newBlog };
+    newObj[property] = value;
+    setNewBlog(newObj);
+  };
+
+  const handleSubmitBlog = async (e) => {
+    e.preventDefault();
+    setShowForm(false);
+    addBlog(newBlog);
+    setNewBlog({
+      title: '',
+      author: '',
+      url: '',
+    });
+  };
+
   return (
     <>
-      <h2>Create new</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          Title&nbsp;
-          <input
-            type="text"
-            name="title"
-            value={title}
-            onChange={({ target }) => handleChange(target, 'title')}
-          ></input>
-        </div>
-        <div>
-          Author&nbsp;
-          <input
-            type="text"
-            name="author"
-            value={author}
-            onChange={({ target }) => handleChange(target, 'author')}
-          ></input>
-        </div>
-        <div>
-          Url&nbsp;
-          <input
-            type="text"
-            name="url"
-            value={url}
-            onChange={({ target }) => handleChange(target, 'url')}
-          ></input>
-        </div>
-        <button type="submit">Create</button>&nbsp;
-        <button type="reset" onClick={() => setShowForm(false)}>
-          Cancel
-        </button>
-      </form>
+      {showForm ? (
+        <>
+          <h2>Create new</h2>
+          <form id="newBlogForm" onSubmit={(e) => handleSubmitBlog(e)}>
+            <div>
+              Title&nbsp;
+              <input
+                id="titleInput"
+                type="text"
+                name="title"
+                value={title}
+                onChange={({ target }) => handleNewBlogChange(target, 'title')}
+              ></input>
+            </div>
+            <div>
+              Author&nbsp;
+              <input
+                id="authorInput"
+                type="text"
+                name="author"
+                value={author}
+                onChange={({ target }) => handleNewBlogChange(target, 'author')}
+              ></input>
+            </div>
+            <div>
+              Url&nbsp;
+              <input
+                id="urlInput"
+                type="text"
+                name="url"
+                value={url}
+                onChange={({ target }) => handleNewBlogChange(target, 'url')}
+              ></input>
+            </div>
+            <button type="submit">Create</button>
+            &nbsp;
+            <button type="reset" onClick={() => setShowForm(false)}>
+              Cancel
+            </button>
+          </form>
+        </>
+      ) : (
+        <>
+          <br />
+          <button id="showForm" onClick={() => setShowForm(true)}>
+            New blog
+          </button>
+          <br />
+        </>
+      )}
     </>
   );
 };
 
 NewBlogForm.propTypes = {
-  handleChange: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  setShowForm: PropTypes.func.isRequired,
-  newBlog: PropTypes.object.isRequired,
+  addBlog: PropTypes.func.isRequired,
 };
 
 export default NewBlogForm;

@@ -29,7 +29,7 @@ const Blog = ({ blog, handleLike, loggedUser, handleRemove }) => {
         <span className="defaultInfo" style={{ marginRight: '1rem' }}>
           <i> {title}</i> by <strong>{author}</strong>
         </span>
-        <button className="toggleInfo" onClick={() => setSeeMore(!seeMore)}>
+        <button id="toggleInfo" onClick={() => setSeeMore(!seeMore)}>
           {seeMore ? 'Close' : 'More'}
         </button>
       </div>
@@ -43,7 +43,7 @@ const Blog = ({ blog, handleLike, loggedUser, handleRemove }) => {
           <div className="likesDiv" style={infoStyle}>
             Likes: {likes}
             <button
-              className="likeButton"
+              id="likeButton"
               style={{ marginLeft: '0.5rem' }}
               onClick={() => handleLike(id)}
             >
