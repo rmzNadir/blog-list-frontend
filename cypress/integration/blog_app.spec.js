@@ -88,6 +88,28 @@ describe('Blog app', function () {
 
         cy.get('html').should('not.contain', '.blog');
       });
+
+      it.only('it cannot be deleted by someone other than the owner', function () {
+        cy.logout();
+
+        const user = {
+          name: 'Diego Ramírez',
+          username: 'notNadir',
+          password: 'hehe',
+        };
+        cy.request('POST', 'http://localhost:3001/api/users', user);
+
+        cy.login({ username: 'notNadir', password: 'hehe' });
+
+        cy.get('#toggleInfo').click();
+
+        cy.get('html').should('contain', 'Diego Ramírez logged in.');
+
+        cy.get('.blog')
+          .should('contain', 'Poster: rmzNadir')
+          .and('not.contain', 'Remove')
+          .and('not.contain', '#removeButton');
+      });
     });
   });
 });

@@ -50,3 +50,8 @@ Cypress.Commands.add('createBlog', ({ title, author, url }) => {
     cy.visit('http://localhost:2999');
   });
 });
+
+Cypress.Commands.add('logout', () => {
+  localStorage.removeItem('user');
+  cy.visit('http://localhost:2999');
+});
