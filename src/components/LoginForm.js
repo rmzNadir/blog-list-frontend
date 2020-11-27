@@ -21,7 +21,7 @@ const LoginForm = ({ handleLogin }) => {
   };
   return (
     <>
-      <h1>Log in to the app</h1>
+      <h1 className="loginTitle">Log in to the app</h1>
       <form onSubmit={(e) => handleFormSubmit(e)}>
         <div>
           Username&nbsp;
