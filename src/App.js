@@ -25,10 +25,8 @@ const App = () => {
     const getAllBlogs = async () => {
       try {
         const allBlogs = await blogService.getAll();
-        const sortedBlogs = allBlogs.sort(
-          (blogA, blogB) => blogB.likes - blogA.likes
-        );
-        setBlogs(sortedBlogs);
+
+        setBlogs(allBlogs);
       } catch (e) {
         console.log(e);
       }

@@ -62,7 +62,7 @@ describe('Blog app', function () {
         .and('not.contain', 'Create new');
     });
 
-    describe.only('and a blog exists', function () {
+    describe('and a blog exists', function () {
       beforeEach(function () {
         cy.createBlog({ title: 'Title', author: 'Author', url: 'URL' });
       });
@@ -89,7 +89,7 @@ describe('Blog app', function () {
         cy.get('html').should('not.contain', '.blog');
       });
 
-      it.only('it cannot be deleted by someone other than the owner', function () {
+      it('it cannot be deleted by someone other than the owner', function () {
         cy.logout();
 
         const user = {
@@ -109,6 +109,43 @@ describe('Blog app', function () {
           .should('contain', 'Poster: rmzNadir')
           .and('not.contain', 'Remove')
           .and('not.contain', '#removeButton');
+      });
+    });
+
+    describe('and multiple blogs exists', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'Title 1',
+          author: 'Author 1',
+          url: 'URL 1',
+          likes: 3,
+        });
+        cy.createBlog({
+          title: 'Title 2',
+          author: 'Author 2',
+          url: 'URL 2',
+          likes: 1,
+        });
+        cy.createBlog({
+          title: 'Title 3',
+          author: 'Author 3',
+          url: 'URL 3',
+          likes: 5,
+        });
+      });
+
+      it('they are ordered according to the number of likes', function () {
+        cy.request('GET', 'http://localhost:3001/api/blogs')
+          .then(({ body }) => {
+            const likes = body.map((blog) => blog.likes);
+            return !!likes.reduce(
+              (acc, likes) => acc !== false && likes <= acc && likes
+            );
+
+            // console.log('isSorted', isSorted);
+            // console.log('likes', likes);
+          })
+          .should('equal', true);
       });
     });
   });
