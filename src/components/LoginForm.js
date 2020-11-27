@@ -26,6 +26,7 @@ const LoginForm = ({ handleLogin }) => {
         <div>
           Username&nbsp;
           <input
+            id="username"
             type="text"
             name="username"
             value={username}
@@ -35,13 +36,16 @@ const LoginForm = ({ handleLogin }) => {
         <div>
           Password&nbsp;
           <input
+            id="password"
             type="password"
             name="password"
             value={password}
             onChange={(e) => handleLoginChange(e, 'password')}
           ></input>
         </div>
-        <button type="submit">Login</button>
+        <button id="submitButton" type="submit">
+          Login
+        </button>
       </form>
     </>
   );
