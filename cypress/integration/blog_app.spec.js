@@ -61,5 +61,21 @@ describe('Blog app', function () {
         .should('contain', ' blog Title successfully created')
         .and('not.contain', 'Create new');
     });
+
+    describe.only('and a blog exists', function () {
+      beforeEach(function () {
+        cy.createBlog({ title: 'Title', author: 'Author', url: 'URL' });
+      });
+
+      it('it can be liked', function () {
+        cy.get('#toggleInfo').click();
+
+        cy.get('.likesDiv').should('contain', 'Likes: 0');
+
+        cy.get('#likeButton').click();
+
+        cy.get('.likesDiv').should('contain', 'Likes: 1');
+      });
+    });
   });
 });
