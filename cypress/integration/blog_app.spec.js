@@ -41,4 +41,25 @@ describe('Blog app', function () {
         .and('not.contain', 'Diego González logged in');
     });
   });
+
+  describe('When logged in', function () {
+    beforeEach(function () {
+      cy.login({ username: 'rmzNadir', password: 'bababooey' });
+    });
+
+    it('A blog can be created', function () {
+      cy.get('#showForm').click();
+
+      cy.get('#titleInput').type('Title');
+      cy.get('#authorInput').type('Author');
+      cy.get('#urlInput').type('URL');
+
+      cy.get('#submitButton').click();
+
+      cy.get('html')
+        .should('contain', 'Title by Author')
+        .should('contain', ' blog Title successfully created')
+        .and('not.contain', 'Create new');
+    });
+  });
 });

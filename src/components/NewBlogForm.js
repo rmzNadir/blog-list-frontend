@@ -64,7 +64,9 @@ const NewBlogForm = ({ createBlog }) => {
                 onChange={({ target }) => handleNewBlogChange(target, 'url')}
               ></input>
             </div>
-            <button type="submit">Create</button>
+            <button id="submitButton" type="submit">
+              Create
+            </button>
             &nbsp;
             <button type="reset" onClick={() => setShowForm(false)}>
               Cancel
