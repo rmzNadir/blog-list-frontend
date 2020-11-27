@@ -32,10 +32,13 @@ describe('Blog app', function () {
       cy.get('#password').type('not so bababooey');
       cy.get('#submitButton').click();
 
+      cy.get('.error')
+        .should('contain', 'Login failed, check your username and password')
+        .and('have.css', 'color', 'rgb(255, 0, 0)');
+
       cy.get('html')
         .should('contain', 'Log in to the app')
-        .and('not.contain', 'Diego González logged in')
-        .and('contain', 'Login failed, check your username and password');
+        .and('not.contain', 'Diego González logged in');
     });
   });
 });
