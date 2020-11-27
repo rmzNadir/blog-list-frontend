@@ -54,7 +54,9 @@ const Blog = ({ blog, handleLike, loggedUser, handleRemove }) => {
           <div className="posterDiv">Poster: {user.username}</div>
           <br />
           {loggedUser === user.username && (
-            <button onClick={() => handleRemove(blog)}>Remove</button>
+            <button id="removeButton" onClick={() => handleRemove(blog)}>
+              Remove
+            </button>
           )}
         </div>
       )}

@@ -76,6 +76,18 @@ describe('Blog app', function () {
 
         cy.get('.likesDiv').should('contain', 'Likes: 1');
       });
+
+      it('it can be deleted by its owner', function () {
+        cy.get('#toggleInfo').click();
+
+        cy.get('.blog')
+          .should('contain', 'Poster: rmzNadir')
+          .and('contain', 'Remove');
+
+        cy.get('#removeButton').click();
+
+        cy.get('html').should('not.contain', '.blog');
+      });
     });
   });
 });
