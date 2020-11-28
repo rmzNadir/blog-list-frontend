@@ -30,7 +30,7 @@ Cypress.Commands.add('login', ({ username, password }) => {
     password,
   }).then(({ body }) => {
     localStorage.setItem('user', JSON.stringify(body));
-    cy.visit('http://localhost:2999');
+    cy.visit('http://localhost:3000');
   });
 });
 
@@ -48,11 +48,11 @@ Cypress.Commands.add('createBlog', ({ title, author, url, likes }) => {
       Authorization: `bearer ${JSON.parse(localStorage.getItem('user')).token}`,
     },
   }).then(() => {
-    cy.visit('http://localhost:2999');
+    cy.visit('http://localhost:3000');
   });
 });
 
 Cypress.Commands.add('logout', () => {
   localStorage.removeItem('user');
-  cy.visit('http://localhost:2999');
+  cy.visit('http://localhost:3000');
 });
