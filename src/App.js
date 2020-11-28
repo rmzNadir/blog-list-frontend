@@ -25,7 +25,6 @@ const App = () => {
     const getAllBlogs = async () => {
       try {
         const allBlogs = await blogService.getAll();
-
         setBlogs(allBlogs);
       } catch (e) {
         console.log(e);
@@ -118,7 +117,10 @@ const App = () => {
         const updatedBlogs = blogs.map((blog) =>
           blog.id === id ? data : blog
         );
-        setBlogs(updatedBlogs);
+        const sortedAndUpdated = updatedBlogs.sort(
+          (blogA, blogB) => blogB.likes - blogA.likes
+        );
+        setBlogs(sortedAndUpdated);
       }
       handleNotification(
         'success',
