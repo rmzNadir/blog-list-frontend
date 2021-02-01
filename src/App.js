@@ -79,25 +79,6 @@ const App = () => {
     handleNotification('success', `${user.username} successfully logged out`);
   };
 
-  // Service implementation for creating a new blog
-
-  const createBlog = async (blog) => {
-    try {
-      const newBlog = await blogService.create(blog);
-      // setBlogs(blogs.concat(newBlog));
-      handleNotification(
-        'success',
-        `blog ${newBlog.title} successfully created`
-      );
-    } catch (e) {
-      handleNotification(
-        'error',
-        'Unable to save blog, please verify that every field is filled before saving a new blog'
-      );
-      console.log(e);
-    }
-  };
-
   return (
     <>
       {notification && <Notification notification={notification} />}
@@ -112,7 +93,7 @@ const App = () => {
             <br />
           </div>
 
-          <NewBlogForm createBlog={createBlog} />
+          <NewBlogForm />
 
           <br />
 

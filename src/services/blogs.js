@@ -12,7 +12,7 @@ const getAll = async () => {
   return res.data;
 };
 
-const create = async (newObject) => {
+const createNew = async (newObject) => {
   const config = {
     headers: { Authorization: token },
   };
@@ -35,4 +35,4 @@ const remove = async (id) => {
   return res.data;
 };
 
-export default { getAll, setToken, create, update, remove };
+export default { getAll, setToken, createNew, update, remove };

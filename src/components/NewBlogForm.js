@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { createBlog } from '../reducers/blogsReducer';
 
-const NewBlogForm = ({ createBlog }) => {
+const NewBlogForm = () => {
+  const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
   const [newBlog, setNewBlog] = useState({
     title: '',
@@ -20,7 +22,7 @@ const NewBlogForm = ({ createBlog }) => {
   const handleSubmitBlog = (e) => {
     e.preventDefault();
     setShowForm(false);
-    createBlog(newBlog);
+    dispatch(createBlog(newBlog));
     setNewBlog({
       title: '',
       author: '',
@@ -28,18 +30,36 @@ const NewBlogForm = ({ createBlog }) => {
     });
   };
 
+  // Service implementation for creating a new blog
+
+  const createBlogOld = async () => {
+    try {
+      // setBlogs(blogs.concat(newBlog));
+      // handleNotification(
+      //   'success',
+      //   `blog ${newBlog.title} successfully created`
+      // );
+    } catch (e) {
+      // handleNotification(
+      //   'error',
+      //   'Unable to save blog, please verify that every field is filled before saving a new blog'
+      // );
+      console.log(e);
+    }
+  };
+
   return (
     <>
       {showForm ? (
         <>
           <h2>Create new</h2>
-          <form id="newBlogForm" onSubmit={(e) => handleSubmitBlog(e)}>
+          <form id='newBlogForm' onSubmit={(e) => handleSubmitBlog(e)}>
             <div>
               Title&nbsp;
               <input
-                id="titleInput"
-                type="text"
-                name="title"
+                id='titleInput'
+                type='text'
+                name='title'
                 value={title}
                 onChange={({ target }) => handleNewBlogChange(target, 'title')}
               ></input>
@@ -47,9 +67,9 @@ const NewBlogForm = ({ createBlog }) => {
             <div>
               Author&nbsp;
               <input
-                id="authorInput"
-                type="text"
-                name="author"
+                id='authorInput'
+                type='text'
+                name='author'
                 value={author}
                 onChange={({ target }) => handleNewBlogChange(target, 'author')}
               ></input>
@@ -57,18 +77,18 @@ const NewBlogForm = ({ createBlog }) => {
             <div>
               Url&nbsp;
               <input
-                id="urlInput"
-                type="text"
-                name="url"
+                id='urlInput'
+                type='text'
+                name='url'
                 value={url}
                 onChange={({ target }) => handleNewBlogChange(target, 'url')}
               ></input>
             </div>
-            <button id="submitButton" type="submit">
+            <button id='submitButton' type='submit'>
               Create
             </button>
             &nbsp;
-            <button type="reset" onClick={() => setShowForm(false)}>
+            <button type='reset' onClick={() => setShowForm(false)}>
               Cancel
             </button>
           </form>
@@ -76,7 +96,7 @@ const NewBlogForm = ({ createBlog }) => {
       ) : (
         <>
           <br />
-          <button id="showForm" onClick={() => setShowForm(true)}>
+          <button id='showForm' onClick={() => setShowForm(true)}>
             New blog
           </button>
           <br />
@@ -84,10 +104,6 @@ const NewBlogForm = ({ createBlog }) => {
       )}
     </>
   );
-};
-
-NewBlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired,
 };
 
 export default NewBlogForm;

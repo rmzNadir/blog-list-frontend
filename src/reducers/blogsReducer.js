@@ -5,7 +5,7 @@ const blogsReducer = (state = [], action) => {
     case 'INIT_BLOGS':
       return action.data;
 
-    case 'NEW_ANECDOTE':
+    case 'NEW_BLOG':
       return [...state, action.data];
 
     case 'ADD_VOTE': {
@@ -26,7 +26,6 @@ const blogsReducer = (state = [], action) => {
 export const initializeBlogs = () => {
   return async (dispatch) => {
     const blogs = await blogsService.getAll();
-    console.log(blogs);
     dispatch({
       type: 'INIT_BLOGS',
       data: blogs,
@@ -34,12 +33,12 @@ export const initializeBlogs = () => {
   };
 };
 
-export const createAnecdote = (content) => {
+export const createBlog = (blog) => {
   return async (dispatch) => {
-    const newAnecdote = await blogsService.createNew(content);
+    const newBlog = await blogsService.createNew(blog);
     return dispatch({
-      type: 'NEW_ANECDOTE',
-      data: newAnecdote,
+      type: 'NEW_BLOG',
+      data: newBlog,
     });
   };
 };
