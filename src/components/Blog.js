@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { likeBlog } from '../reducers/blogsReducer';
+import { useDispatch } from 'react-redux';
 
 const BlogStyle = {
   display: 'flex',
@@ -18,7 +20,8 @@ const infoStyle = {
   alignItems: 'center',
 };
 
-const Blog = ({ blog, handleLike, loggedUser, handleRemove }) => {
+const Blog = ({ blog, loggedUser, handleRemove }) => {
+  const dispatch = useDispatch();
   const [seeMore, setSeeMore] = useState(false);
 
   const { title, author, url, likes, user, id } = blog;
@@ -45,7 +48,7 @@ const Blog = ({ blog, handleLike, loggedUser, handleRemove }) => {
             <button
               id='likeButton'
               style={{ marginLeft: '0.5rem' }}
-              onClick={() => handleLike(id)}
+              onClick={() => dispatch(likeBlog(blog))}
             >
               Like
             </button>

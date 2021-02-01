@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createBlog } from '../reducers/blogsReducer';
-import { setNotification } from '../reducers/notificationReducer';
 
 const NewBlogForm = () => {
   const dispatch = useDispatch();
@@ -29,24 +28,6 @@ const NewBlogForm = () => {
       author: '',
       url: '',
     });
-  };
-
-  // Service implementation for creating a new blog
-
-  const createBlogOld = async () => {
-    try {
-      // setBlogs(blogs.concat(newBlog));
-      // handleNotification(
-      //   'success',
-      //   `blog ${newBlog.title} successfully created`
-      // );
-    } catch (e) {
-      // handleNotification(
-      //   'error',
-      //   'Unable to save blog, please verify that every field is filled before saving a new blog'
-      // );
-      console.log(e);
-    }
   };
 
   return (

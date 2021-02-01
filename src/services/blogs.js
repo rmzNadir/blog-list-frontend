@@ -21,6 +21,12 @@ const createNew = async (newObject) => {
   return res.data;
 };
 
+const addLike = async ({ id, likes }) => {
+  const res = await axios.patch(`${baseUrl}/${id}`, { likes: likes + 1 });
+
+  return res.data.data;
+};
+
 const update = async (id, blog) => {
   const res = await axios.patch(`${baseUrl}/${id}`, blog);
   return res.data;
@@ -35,4 +41,4 @@ const remove = async (id) => {
   return res.data;
 };
 
-export default { getAll, setToken, createNew, update, remove };
+export default { getAll, setToken, createNew, update, remove, addLike };

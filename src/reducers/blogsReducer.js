@@ -9,12 +9,12 @@ const blogsReducer = (state = [], action) => {
     case 'NEW_BLOG':
       return [...state, action.data];
 
-    case 'ADD_VOTE': {
-      const anecdote = action.data;
+    case 'LIKE_BLOG': {
+      const blog = action.data;
 
       const updatedArr = state
-        .map((a) => (a.id === anecdote.id ? anecdote : a))
-        .sort((a, b) => parseFloat(b.votes) - parseFloat(a.votes));
+        .map((a) => (a.id === blog.id ? blog : a))
+        .sort((a, b) => parseFloat(b.likes) - parseFloat(a.likes));
 
       return updatedArr;
     }
@@ -66,13 +66,37 @@ export const createBlog = (blog) => {
   };
 };
 
-export const addVote = (anecdote) => {
+export const likeBlog = (blog) => {
   return async (dispatch) => {
-    const updatedAnecdote = await blogsService.addVote(anecdote);
-    dispatch({
-      type: 'ADD_VOTE',
-      data: updatedAnecdote,
-    });
+    try {
+      const updatedBlog = await blogsService.addLike(blog);
+
+      dispatch(
+        setNotification(
+          {
+            type: 'success',
+            title: `You liked ${blog.title} by ${blog.author}`,
+          },
+          5
+        )
+      );
+
+      return dispatch({
+        type: 'LIKE_BLOG',
+        data: updatedBlog,
+      });
+    } catch (e) {
+      console.log(e);
+      dispatch(
+        setNotification(
+          {
+            type: 'error',
+            title: 'Unable to like blog, something went wrong',
+          },
+          5
+        )
+      );
+    }
   };
 };
 
