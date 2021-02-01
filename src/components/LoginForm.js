@@ -8,6 +8,9 @@ import { loginUser } from '../reducers/userReducer';
 const LoginForm = () => {
   const dispatch = useDispatch();
 
+  // State only used by a single component that doesn't matter globally
+  // and state for non critical UI elements can be local
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 

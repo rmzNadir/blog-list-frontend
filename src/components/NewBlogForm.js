@@ -4,6 +4,10 @@ import { createBlog } from '../reducers/blogsReducer';
 
 const NewBlogForm = () => {
   const dispatch = useDispatch();
+
+  // State only used by a single component that doesn't matter globally
+  // and state for non critical UI elements can be local
+
   const [showForm, setShowForm] = useState(false);
   const [newBlog, setNewBlog] = useState({
     title: '',

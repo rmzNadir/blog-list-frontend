@@ -23,6 +23,10 @@ const infoStyle = {
 const Blog = ({ blog }) => {
   const dispatch = useDispatch();
   const loggedUser = useSelector(({ user }) => user.id);
+
+  // State only used by a single component that doesn't matter globally
+  // and state for non critical UI elements can be local
+
   const [seeMore, setSeeMore] = useState(false);
 
   const { title, author, url, likes, user } = blog;
