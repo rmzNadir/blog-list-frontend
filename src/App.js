@@ -7,6 +7,7 @@ import NewBlogForm from './components/NewBlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import { initializeBlogs } from './reducers/blogsReducer';
+import { setNotification } from './reducers/notificationReducer';
 import { useDispatch } from 'react-redux';
 
 // Styles
@@ -21,7 +22,6 @@ import loginService from './services/login';
 const App = () => {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     dispatch(initializeBlogs());
@@ -31,22 +31,19 @@ const App = () => {
       const user = JSON.parse(userJSON);
       setUser(user);
       blogService.setToken(user.token);
-      handleNotification('success', `${user.username} successfully logged in`);
+      dispatch(
+        setNotification(
+          {
+            type: 'success',
+            title: `${user.username} successfully logged in`,
+          },
+          5
+        )
+      );
     }
   }, [dispatch]);
 
   /* ------------------------ Services ------------------------ */
-
-  const handleNotification = (type, message) => {
-    const notificationObject = {
-      message,
-      type,
-    };
-    setNotification(notificationObject);
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
-  };
 
   // Service implementation for handling user logins
 
@@ -61,12 +58,26 @@ const App = () => {
       blogService.setToken(user.token);
       setUser(user);
 
-      handleNotification('success', `${user.username} successfully logged in`);
-    } catch (e) {
-      handleNotification(
-        'error',
-        'Login failed, check your username and password'
+      dispatch(
+        setNotification(
+          {
+            type: 'success',
+            title: `${user.username} successfully logged in`,
+          },
+          5
+        )
       );
+    } catch (e) {
+      dispatch(
+        setNotification(
+          {
+            type: 'error',
+            title: 'Login failed, check your username and password',
+          },
+          5
+        )
+      );
+
       console.log(e);
     }
   };
@@ -76,14 +87,21 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('user');
     setUser(null);
-    handleNotification('success', `${user.username} successfully logged out`);
+    dispatch(
+      setNotification(
+        {
+          type: 'success',
+          title: `${user.username} successfully logged out`,
+        },
+        5
+      )
+    );
   };
 
   return (
     <>
-      {notification && <Notification notification={notification} />}
+      <Notification />
       {!user && <LoginForm handleLogin={handleLogin} />}
-
       {user && (
         <>
           <h2>blogs</h2>

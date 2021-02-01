@@ -1,4 +1,5 @@
 import blogsService from '../services/blogs';
+import { setNotification } from '../reducers/notificationReducer';
 
 const blogsReducer = (state = [], action) => {
   switch (action.type) {
@@ -35,11 +36,33 @@ export const initializeBlogs = () => {
 
 export const createBlog = (blog) => {
   return async (dispatch) => {
-    const newBlog = await blogsService.createNew(blog);
-    return dispatch({
-      type: 'NEW_BLOG',
-      data: newBlog,
-    });
+    try {
+      const newBlog = await blogsService.createNew(blog);
+      dispatch(
+        setNotification(
+          {
+            type: 'success',
+            title: `blog ${newBlog.title} successfully created`,
+          },
+          5
+        )
+      );
+      return dispatch({
+        type: 'NEW_BLOG',
+        data: newBlog,
+      });
+    } catch (e) {
+      dispatch(
+        setNotification(
+          {
+            type: 'error',
+            title:
+              'Unable to save blog, please verify that every field is filled before saving a new blog',
+          },
+          5
+        )
+      );
+    }
   };
 };
 

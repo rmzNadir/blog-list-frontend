@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 const extraStyle = {
   width: 'auto',
@@ -8,13 +9,17 @@ const extraStyle = {
   right: '30%',
 };
 
-const Notification = ({ notification }) => {
-  const { message, type } = notification;
+const Notification = () => {
+  const notification = useSelector(({ notification }) => notification);
+
+  const { title, type } = notification;
   // console.log('notification', notification);
   return (
-    <div style={extraStyle} className={type}>
-      {message}
-    </div>
+    title !== '' && (
+      <div style={extraStyle} className={type}>
+        {title}
+      </div>
+    )
   );
 };
 
