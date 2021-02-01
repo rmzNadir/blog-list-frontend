@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { likeBlog } from '../reducers/blogsReducer';
-import { useDispatch } from 'react-redux';
+import { likeBlog, removeBlog } from '../reducers/blogsReducer';
+import { useDispatch, useSelector } from 'react-redux';
 
 const BlogStyle = {
   display: 'flex',
@@ -20,11 +20,24 @@ const infoStyle = {
   alignItems: 'center',
 };
 
-const Blog = ({ blog, loggedUser, handleRemove }) => {
+const Blog = ({ blog }) => {
   const dispatch = useDispatch();
+  const loggedUser = useSelector(({ user }) => user.id);
   const [seeMore, setSeeMore] = useState(false);
 
   const { title, author, url, likes, user } = blog;
+
+  // Service implementation for handling removal of blogs
+
+  const handleRemove = async (blog) => {
+    const { title, author, id } = blog;
+    const confirmResult = window.confirm(
+      `Are you sure you want to remove blog ${title} by ${author}?`
+    );
+    if (confirmResult) {
+      dispatch(removeBlog(id));
+    }
+  };
 
   return (
     <div className='blog' style={BlogStyle}>
@@ -56,7 +69,7 @@ const Blog = ({ blog, loggedUser, handleRemove }) => {
           <br />
           <div className='posterDiv'>Poster: {user.username}</div>
           <br />
-          {loggedUser === user.username && (
+          {loggedUser === user.id && (
             <button id='removeButton' onClick={() => handleRemove(blog)}>
               Remove
             </button>

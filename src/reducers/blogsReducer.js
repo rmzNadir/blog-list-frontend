@@ -18,6 +18,11 @@ const blogsReducer = (state = [], action) => {
 
       return updatedArr;
     }
+    case 'REMOVE_BLOG': {
+      const id = action.data;
+
+      return state.filter((blog) => blog.id !== id);
+    }
 
     default:
       return state;
@@ -96,6 +101,51 @@ export const likeBlog = (blog) => {
           5
         )
       );
+    }
+  };
+};
+
+export const removeBlog = (id) => {
+  return async (dispatch) => {
+    try {
+      const deleteBlog = await blogsService.remove(id);
+      const { success } = deleteBlog;
+      if (success) {
+        dispatch(
+          setNotification(
+            {
+              type: 'success',
+              title: 'Blog successfully deleted',
+            },
+            5
+          )
+        );
+        dispatch({
+          type: 'REMOVE_BLOG',
+          data: id,
+        });
+      } else {
+        dispatch(
+          setNotification(
+            {
+              type: 'error',
+              title: 'Unable to delete blog, something went wrong',
+            },
+            5
+          )
+        );
+      }
+    } catch (e) {
+      dispatch(
+        setNotification(
+          {
+            type: 'error',
+            title: 'Unable to delete blog, something went wrong',
+          },
+          5
+        )
+      );
+      console.log(e);
     }
   };
 };
