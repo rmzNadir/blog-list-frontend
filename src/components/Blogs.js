@@ -32,9 +32,7 @@ const Blogs = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          // loggedUser={user.username}
           // handleRemove={handleRemove}
-          // handleLike={handleLike}
         />
       ))}
     </div>

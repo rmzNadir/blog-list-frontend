@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 // Components
 
@@ -6,9 +6,7 @@ import Blogs from './components/Blogs';
 import NewBlogForm from './components/NewBlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
-import { initializeBlogs } from './reducers/blogsReducer';
-import { setNotification } from './reducers/notificationReducer';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Styles
 
@@ -16,77 +14,23 @@ import './App.css';
 
 // Services
 
-import blogService from './services/blogs';
-import loginService from './services/login';
+import { initializeBlogs } from './reducers/blogsReducer';
+import { setNotification } from './reducers/notificationReducer';
+import { initializeUser, logoutUser } from './reducers/userReducer';
 
 const App = () => {
   const dispatch = useDispatch();
-  const [user, setUser] = useState(null);
+  const user = useSelector(({ user }) => user);
 
   useEffect(() => {
     dispatch(initializeBlogs());
-
-    const userJSON = window.localStorage.getItem('user');
-    if (userJSON) {
-      const user = JSON.parse(userJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-      dispatch(
-        setNotification(
-          {
-            type: 'success',
-            title: `${user.username} successfully logged in`,
-          },
-          5
-        )
-      );
-    }
+    dispatch(initializeUser());
   }, [dispatch]);
-
-  /* ------------------------ Services ------------------------ */
-
-  // Service implementation for handling user logins
-
-  const handleLogin = async (username, password) => {
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-
-      window.localStorage.setItem('user', JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-
-      dispatch(
-        setNotification(
-          {
-            type: 'success',
-            title: `${user.username} successfully logged in`,
-          },
-          5
-        )
-      );
-    } catch (e) {
-      dispatch(
-        setNotification(
-          {
-            type: 'error',
-            title: 'Login failed, check your username and password',
-          },
-          5
-        )
-      );
-
-      console.log(e);
-    }
-  };
 
   // Service implementation for handling user logouts
 
   const handleLogout = () => {
-    window.localStorage.removeItem('user');
-    setUser(null);
+    dispatch(logoutUser());
     dispatch(
       setNotification(
         {
@@ -101,7 +45,7 @@ const App = () => {
   return (
     <>
       <Notification />
-      {!user && <LoginForm handleLogin={handleLogin} />}
+      {!user && <LoginForm />}
       {user && (
         <>
           <h2>blogs</h2>

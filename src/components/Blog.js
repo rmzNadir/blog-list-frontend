@@ -24,7 +24,7 @@ const Blog = ({ blog, loggedUser, handleRemove }) => {
   const dispatch = useDispatch();
   const [seeMore, setSeeMore] = useState(false);
 
-  const { title, author, url, likes, user, id } = blog;
+  const { title, author, url, likes, user } = blog;
 
   return (
     <div className='blog' style={BlogStyle}>
