@@ -24,26 +24,26 @@ const Blog = ({ blog, handleLike, loggedUser, handleRemove }) => {
   const { title, author, url, likes, user, id } = blog;
 
   return (
-    <div className="blog" style={BlogStyle}>
+    <div className='blog' style={BlogStyle}>
       <div>
-        <span className="defaultInfo" style={{ marginRight: '1rem' }}>
+        <span className='defaultInfo' style={{ marginRight: '1rem' }}>
           <i> {title}</i> by <strong>{author}</strong>
         </span>
-        <button id="toggleInfo" onClick={() => setSeeMore(!seeMore)}>
+        <button id='toggleInfo' onClick={() => setSeeMore(!seeMore)}>
           {seeMore ? 'Close' : 'More'}
         </button>
       </div>
       {seeMore && (
-        <div className="extraInfo">
+        <div className='extraInfo'>
           <br />
-          <div className="linkDiv">
+          <div className='linkDiv'>
             Link: <a href={url}>{url}</a>
           </div>
           <br />
-          <div className="likesDiv" style={infoStyle}>
+          <div className='likesDiv' style={infoStyle}>
             Likes: {likes}
             <button
-              id="likeButton"
+              id='likeButton'
               style={{ marginLeft: '0.5rem' }}
               onClick={() => handleLike(id)}
             >
@@ -51,10 +51,10 @@ const Blog = ({ blog, handleLike, loggedUser, handleRemove }) => {
             </button>
           </div>
           <br />
-          <div className="posterDiv">Poster: {user.username}</div>
+          <div className='posterDiv'>Poster: {user.username}</div>
           <br />
           {loggedUser === user.username && (
-            <button id="removeButton" onClick={() => handleRemove(blog)}>
+            <button id='removeButton' onClick={() => handleRemove(blog)}>
               Remove
             </button>
           )}
